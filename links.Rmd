@@ -1,0 +1,30 @@
+---
+title: "External Resources"
+output: html_document
+---
+
+### General Reference Texts
+
+Bard, A. J.; Faulkner, L. R. *Electrochemical Methods*, Wiley: New York, 1980.
+
+Kissinger, P. T.; Heineman, W. R. *Laboratory Techniques in Electroanalytical Chemistry*, Marcel Dekker: New York, 1984.
+
+### Articles from the *Journal of Chemical Education*
+
+Faulkner, L. R. "Understanding Electrochemistry: Some Distinctive Concepts," *J. Chem. Educ.* **1983**, *69*, 262--264.
+
+Huddle, P. A.; White, M. D. Rogers, F. "Using a Teaching Model to Correct Known Misconceptions in Electrochemistry," *J. Chem. Educ.* **2000**, *77*, 104--110.
+
+Maloy, J. T. "Factors Affecting the Shape of Current-Potential Curves," *J. Chem. Educ.* **1983**, *60*, 285--289.
+
+Miles, D. T. "Run-D.M.C: A Mnemomic Aid for Explaining Mass Transfer in Electrochemical Systems," *J. Chem. Educ.* **2013**, *90*, 1649--1653
+
+Thompson, R. Q.; Craig, N. C. "Unified Electroanalytical Chemistry: Applications of the Concept of Equilibrium," *J. Chem. Educ.* **2001**, *78*, 928--934.
+
+Zoski, C. G. "Charging Current Discrimination in Analytical Voltammetry," *J. Chem. Educ.* **1986**, *63*, 910--914.
+
+### Analytical Chemistry 2.0
+
+Chapter 11.1 Overview of Electrochemistry [(link)](http://chem.libretexts.org/Textbook_Maps/Analytical_Chemistry_Textbook_Maps/Map%3A_Analytical_Chemistry_2.0_(Harvey)/11_Electrochemical_Methods/11.1%3A_Overview_of_Electrochemistry)
+
+Chapter 11.4 Voltammetric Methods [(link)](http://chem.libretexts.org/Textbook_Maps/Analytical_Chemistry_Textbook_Maps/Map%3A_Analytical_Chemistry_2.0_(Harvey)/11_Electrochemical_Methods/11.4%3A_Voltammetric_Methods)

@@ -1,0 +1,334 @@
+---
+title: "CV Functions"
+output: 
+  html_document: 
+    toc: yes
+---
+This file simply shows the various R functions written for studying voltammetry. Specific details regarding the use of each function, including sample ouput, are available from other documents listed under the `Code` menu.
+
+### cvSim( ): Function to Simulate a Cyclic Voltammogram
+
+```
+cvSim = function(e.start = 0.20, e.switch = -0.30, e.form = 0.013, 
+                 n = 1, ko = 1, alpha = 0.50, d = 1e-5, area = 0.04, 
+                 temp = 293.15, scan.rate = 0.04, cox.bulk = 6.1e-8, 
+                 cred.bulk = 0, t.units = 200, x.units = 50) {
+
+f = 96485
+r = 8.31451
+
+# calculate additional simulation parameters
+  # t.tot: time to complete one full sweep from e.start to e.start
+  # delta.t: increment in time 
+  # time: vector of discrete times for diffusion grid
+
+t.tot = 2 * (e.start - e.switch)/scan.rate
+delta.t = t.tot/t.units
+time = seq(0, t.tot, delta.t)
+
+  # x.tot: max distance from electrode chosen to exceed difusion limit
+  # delta.x: increment in distance
+  # distance: vector of discrete distances for diffusion grid
+
+x.tot = 6 * sqrt(d * t.tot)
+delta.x = x.tot/x.units
+distance = seq(0, x.tot, delta.x)
+
+  # potential: vector of discrete applied potentials; initial vector is
+  # filled using e.start and then potentials are calculated at other 
+  # times using two loops (e.start -> e.switch and e.switch -> e.start)
+
+potential = rep(e.start, t.units + 1)
+for (i in 1:(t.units/2)) {
+    potential[i + 1] = potential[i] - scan.rate * delta.t
+}
+for (i in (1 + t.units/2):t.units) {
+    potential[i + 1] = potential[i] + scan.rate * delta.t
+}
+
+  # kf: rate constant for forward (ox -> red) reaction at each potential
+  # kb: rate constant for backward (red -> ox) reaction at each potential
+  # lambda: simulation parameter (just a gathering of constants)
+
+kf = ko * exp(-alpha * n * f * (potential - e.form)/(r*temp))
+kb = ko * exp((1 - alpha) * n * f * (potential - e.form)/(r*temp))
+lambda = d * delta.t/(delta.x)^2
+
+# initialize the diffusion grid (rows = time; cols = distance)
+# using bulk concentrations for ox and for red
+
+dif.ox = matrix(cox.bulk, nrow = t.units + 1, ncol = x.units + 1)
+dif.red = matrix(cred.bulk, nrow = t.units + 1, ncol = x.units + 1)
+
+# create vectors for fluxes and current, which are calculated
+# later in for loops; the initial values here are not important as the
+# actual values are calculated later and replace these values
+
+jox = rep(0, t.units + 1)
+jred = rep(0, t.units + 1)
+current.total = rep(0, t.units + 1)
+
+# calculate diffusion grid over time and over distance; for each time
+# the diffusion grid first is calculated at all distances except for
+# that at the electrode surface and then calculated at the electrode
+# surface; finally, the current is calculate for each time
+
+for (i in 2:(t.units + 1)){
+  for (j in 2:x.units) {
+    dif.ox[i, j] = dif.ox[i-1, j] + lambda * (dif.ox[i-1, j-1] - 2 * dif.ox[i-1, j] + dif.ox[i-1, j+1])
+    dif.red[i, j] = dif.red[i-1, j] + lambda * (dif.red[i-1, j-1] - 2 * dif.red[i-1, j] + dif.red[i-1, j+1])
+    jox[i] = -(kf[i] * dif.ox[i,2] - kb[i] * dif.red[i,2])/(1 + (kf[i] * delta.x)/d + (kb[i] * delta.x)/d)
+    jred[i] = -jox[i]
+    dif.ox[i, 1] = dif.ox[i, 2] + jox[i] * delta.x/d
+    dif.red[i, 1] = dif.red[i, 2] + jred[i] * delta.x/d
+  }
+  current.total[i] = -n * f * area * jox[i]
+}
+
+# return calculated results as a list to input into plotting functions
+  # current: vector of current at each discrete time
+  # potential: vector of discrete potentials
+  # time: vector of discrete times
+  # distance: vector of discrete distances
+  # oxdata: matrix of ox concentrations in diffusion grid
+  # reddata: matrix of red concentrations in diffusion grid
+  # formalE: the redox couple's formal potential
+
+output = list("current" = current.total, "potential" = potential,
+              "time" = time, "distance" = distance, 
+              "oxdata" = dif.ox, "reddata" = dif.red, "formalE" = e.form)
+invisible(output)
+}
+```
+
+### plotCV( ): plot cyclic voltammogram
+
+```
+plotCV = function(file, overlay = FALSE) {
+  if (overlay == FALSE) {
+    plot(x = file$potential, y = file$current, lwd = 3, 
+       type = "l", xlab = "potential (V)", ylab = "current (A)", 
+       xlim = c(max(file$potential), min(file$potential)), col = "blue")
+    abline(v = file$formalE, lwd = 2, lty = 2, col = "blue")
+    abline(h = 0, lwd = 2, lty = 2, col = "blue")
+  } else {
+    lines(x = file$potential, y = file$current, lwd = 3, col = "red") 
+  }
+}
+```
+
+### plotlyCV( ): plot CV using the plotly package
+
+```
+# requires the plotly package
+plotlyCV = function(file) {
+plot_ly(x = file$potential, y = file$current, type = "scatter", mode = "lines") %>% layout(xaxis = list(autorange = "reversed"))
+}
+```
+
+### plotPotential( ): plot showing potential as a function of time 
+
+```
+plotPotential = function(file){
+  plot(x = file$time, y = file$potential, lwd = 3, col = "blue",
+       type = "l", xlab = "time (sec)", ylab = "potential (V)")
+}
+```
+
+### plotDiffusion( ): plot diffusion profiles at discrete time
+
+```
+plotDiffusion = function(file, index = 1, both_species = TRUE) {
+  plot(x = file$distance, y = file$oxdata[index, ], type = "l", lwd = 3, 
+       col = "blue", ylim = c(0, max(file$oxdata[index, ])),
+       xlab = "distance from electrode (cm)", 
+       ylab = "concentration (M)", 
+       main = paste0("Diffusion Profile at t = ", file$time[index], " sec and E = ", file$potential[index], " V"))
+  if (both_species == TRUE) {
+    lines(x = file$distance, y = file$reddata[index, ], 
+        lwd = 3, col = "red")
+    legend(x = "topright", legend = c("OX", "RED"), 
+         fill = c("blue", "red"), 
+         bty = "n", inset = c(0.05, 0.05))}
+}
+```
+
+### plotGrid( ): plot grid of diffusion profiles for single CV
+
+```
+plotGrid = function(file) {
+  increment = floor(length(file$time)/7)
+  multiplier = c(0:7)
+  t = increment * multiplier + 1
+  old.par = par(mfrow = c(3,3))
+  # screen(1)
+  plot(x = file$distance, y = file$oxdata[t[2] + 1, ], 
+       type = "l", lwd = 2, 
+       col = "blue", ylim = c(0, max(file$oxdata[t, ])),
+       xlab = "distance from electrode (cm)", 
+       ylab = "concentration (M)", 
+       main = paste("time = ", file$time[t[2]], " sec"))
+  lines(x = file$distance, y = file$reddata[t[2] + 1, ], 
+        lwd = 2, col = "red")
+  legend(x = "right", legend = c("OX", "RED"), fill = c("blue", "red"), 
+         bty = "n", inset = c(0.05, 0.01))
+  # screen(2)
+  plot(x = file$distance, y = file$oxdata[t[3] +1, ], 
+       type = "l", lwd = 2, 
+       col = "blue", ylim = c(0, max(file$oxdata[t, ])),
+       xlab = "distance from electrode (cm)", 
+       ylab = "concentration (M)", 
+       main = paste("time = ", file$time[t[3]], " sec"))
+  lines(x = file$distance, y = file$reddata[t[3] + 1, ], 
+        lwd = 2, col = "red")
+  legend(x = "right", legend = c("OX", "RED"), fill = c("blue", "red"), 
+         bty = "n", inset = c(0.05, 0.01))
+  # screen(3)
+  plot(x = file$distance, y = file$oxdata[t[4] +1, ], 
+       type = "l", lwd = 2, 
+       col = "blue", ylim = c(0, max(file$oxdata[t, ])),
+       xlab = "distance from electrode (cm)", 
+       ylab = "concentration (M)", 
+       main = paste("time = ", file$time[t[4]], " sec"))
+  lines(x = file$distance, y = file$reddata[t[4] + 1, ], 
+        lwd = 2, col = "red")
+  legend(x = "right", legend = c("OX", "RED"), fill = c("blue", "red"), 
+         bty = "n", inset = c(0.05, 0.01))
+  # screen(4)
+  plot(x = file$distance, y = file$oxdata[t[1] +1, ], 
+       type = "l", lwd = 2, 
+       col = "blue", ylim = c(0, max(file$oxdata[t, ])),
+       xlab = "distance from electrode (cm)", 
+       ylab = "concentration (M)", 
+       main = paste("time = ", file$time[t[1]], " sec"))
+  lines(x = file$distance, y = file$reddata[t[1] + 1, ], 
+        lwd = 2, col = "red")
+  legend(x = "right", legend = c("OX", "RED"), fill = c("blue", "red"), 
+         bty = "n", inset = c(0.05, 0.01))
+  # screen(5)
+  plot(x = file$potential, y = file$current, lwd = 2, col = "blue", 
+       type = "l", xlab = "potential (V)", ylab = "current (A)", 
+       xlim = c(max(file$potential), min(file$potential)),
+       ylim = c(1.1 * min(file$current), 1.1 * max(file$current)), 
+       main = "points: times for diffusion profiles")
+  abline(v = file$formalE, lty = 2, col = "blue")
+  abline(h = 0, lty = 2, col = "blue")
+  points(x = file$potential[t + 1], 
+         y = file$current[t + 1], pch = 19, col = "blue", cex = 1.5)
+  for (i in 1:8) {
+  if(t[i] < length(file$time)/2){
+  text(x = file$potential[t[i] + 1], y = file$current[t[i] + 1], 
+       labels = as.character(file$time[t[i]]), pos = 3, cex = 0.75)
+  } else {
+    text(x = file$potential[t[i] + 1], y = file$current[t[i] + 1], 
+         labels = as.character(file$time[t[i]]), pos = 1, cex = 0.75)
+  }
+  }
+  # screen(6)
+  plot(x = file$distance, y = file$oxdata[t[5] + 1, ], 
+       type = "l", lwd = 2, 
+       col = "blue", ylim = c(0, max(file$oxdata[t, ])),
+       xlab = "distance from electrode (cm)", 
+       ylab = "concentration (M)", 
+       main = paste("time = ", file$time[t[5]], " sec"))
+  lines(x = file$distance, y = file$reddata[t[5] + 1, ], 
+        lwd = 2, col = "red")
+  legend(x = "right", legend = c("OX", "RED"), fill = c("blue", "red"), 
+         bty = "n", inset = c(0.05, 0.01))
+  # screen(7)
+  plot(x = file$distance, y = file$oxdata[t[8] + 1, ], 
+       type = "l", lwd = 2, 
+       col = "blue", ylim = c(0, max(file$oxdata[t, ])),
+       xlab = "distance from electrode (cm)", 
+       ylab = "concentration (M)", 
+       main = paste("time = ", file$time[t[8]], " sec"))
+  lines(x = file$distance, y = file$reddata[t[8] + 1, ], 
+        lwd = 2, col = "red")
+  legend(x = "right", legend = c("OX", "RED"), fill = c("blue", "red"), 
+         bty = "n", inset = c(0.05, 0.01))
+  # screen(8)
+  plot(x = file$distance, y = file$oxdata[t[7] + 1, ], 
+       type = "l", lwd = 2, 
+       col = "blue", ylim = c(0, max(file$oxdata[t, ])),
+       xlab = "distance from electrode (cm)", 
+       ylab = "concentration (M)", 
+       main = paste("time = ", file$time[t[7]], " sec"))
+  lines(x = file$distance, y = file$reddata[t[7] + 1, ], 
+        lwd = 2, col = "red")
+  legend(x = "right", legend = c("OX", "RED"), fill = c("blue", "red"), 
+         bty = "n", inset = c(0.05, 0.01))
+  # screen(9)
+  plot(x = file$distance, y = file$oxdata[t[6] + 1, ], 
+       type = "l", lwd = 2, 
+       col = "blue", ylim = c(0, max(file$oxdata[t, ])),
+       xlab = "distance from electrode (cm)", 
+       ylab = "concentration (M)", 
+       main = paste("time = ", file$time[t[6]], " sec"))
+  lines(x = file$distance, y = file$reddata[t[6] + 1, ], 
+        lwd = 2, col = "red")
+  legend(x = "right", legend = c("OX", "RED"), fill = c("blue", "red"), 
+         bty = "n", inset = c(0.05, 0.01))
+  par(old.par)
+}
+```
+
+### animateDiffusion( ): animate diffusion profiles
+
+```
+animateDiffusion = function(file, speed = 5){
+for (i in seq(1, length(file$time), speed)) {
+  plot(x = file$distance, y = file$oxdata[i,  ],
+       type = "l", lwd = 3, col = "blue", 
+       ylim = c(0, 1.05*max(file$oxdata)), 
+       xlab = "distance from electrode (cm)", 
+       ylab = "concentration (M)")
+  lines(x = file$distance, y = file$reddata[i, ], 
+        lwd = 3, col = "red")
+  Sys.sleep(0.1)
+}
+}
+```
+
+### animateCV( ): animate cyclic voltammogram
+
+```
+animateCV = function(file, speed = 5){
+  for (i in seq(1, length(file$potential), speed)) {
+    plot(x = file$potential[1:i], y = file$current[1:i], 
+         col = "blue", type = "l", lwd = 3,
+         xlim = c(max(file$potential), min(file$potential)),
+         ylim = c(min(file$current), max(file$current)),
+         xlab = "potential (V)", ylab = "current (A)")
+    Sys.sleep(0.1)
+  }
+}
+```
+
+### tableCV( ): table of indecies, time, potential, current
+
+```
+### requires the DT and magrittr packages
+tableCV = function(file) {
+  index = c(1:length(file$time))
+  current = format(file$current, digits = 3, scientific = TRUE)
+  df = data.frame(index, file$time, file$potential, current)
+  colnames(df) = c("index", "time (s)", "potential (V)", "current (A)")
+  datatable(df, options = list(columnDefs = list(list(className = 'dt-center', targets = c(1:4))))) %>% 
+    formatRound("time (s)", 3) %>% 
+    formatRound("potential (V)", 3)
+}
+```
+
+### summaryCV( ): returns values for max/min current and for peak potentials
+
+```
+summaryCV = function(file) {
+  note = c("imax: maximum current in A", "imin: minimum current in A", "epc: cathodic peak potential in V", "epa: anodic peak potential in V")
+  imax = as.numeric(format(max(file$current), digits = 3, scientific = TRUE))
+  imin = as.numeric(format(min(file$current), digits = 3, scientific = TRUE))
+  epc = file$potential[which.max(file$current)]
+  epa = file$potential[which.min(file$current)]
+  output = list("note" = note, "imax" = imax, "imin" = imin, "epc" = epc, "epa" = epa)
+  output
+}
+```

@@ -1,0 +1,51 @@
+---
+output: html_document
+---
+
+### Key Terms
+
+The following is a set of key terms that are important when discussing voltammetry. You should aim to have a clear sense of each term's meaning, both so that you can read material with full understanding and so that you can speak about voltammetry with confidence; for this reason you may wish to add your own definitions of these key terms to this file.
+
+**anode**
+
+**anodic current**
+
+**auxillary electrode**
+
+**cathode**
+
+**cathodic current**
+
+**charging current**
+
+**convection**
+
+**counter electrode**
+
+**cyclic voltammetry**
+
+**diffusion**
+
+In electrochemistry, the diffusion layer, according to IUPAC, is defined as the "region in the vicinity of an electrode where the concentrations are different from their value in the bulk solution. The definition of the thickness of the diffusion layer is arbitrary because the concentration approaches asymptotically the value in the bulk solution". [Wikipedia](https://en.wikipedia.org/wiki/Diffusion_layer)
+
+**diffusion layer**
+
+**electrical double layer**
+
+**electrochemically reversible/irreversible**
+
+**faradaic current**
+
+**indicator electrode**
+
+**limiting current**
+
+**mass transport**
+
+**migration**
+
+**non-faradaic current**
+
+**residual current**
+
+**voltammetry**

@@ -1,0 +1,31 @@
+---
+output: html_document
+---
+
+### Problem Set 2
+
+Now that you are familiar with the `R` functions for simulating a cyclic voltammetry experiment and viewing the resulting cyclic voltammogram, let's explore the relationship between the simulation's variables and the cathodic peak current for a system in which the initial redox reaction is OX + *ne*^-^ $\rightarrow$ RED. As a reminder, the `cvSim` function takes the following variables, each with a default value.
+
+```
+cvSim(e.start = 0.20, e.switch = -0.30, e.form = 0.013, 
+      n = 1, ko = 1, alpha = 0.50, d = 1e-5, area = 0.04, 
+      temp = 293.15, scan.rate = 0.04, cox.bulk = 6.1e-8, 
+      cred.bulk = 0, t.units = 200, x.units = 50)
+```
+
+* `e.start`: the initial applied potential (defaults to 0.20 V)
+* `e.switch`: the applied potential where we reverse the direction in which the potential is scanned (defaults to -0.30 V)
+* `e.form`: the redox couple's formal potential (defaults to 0.013 V)
+* `n`: the number of electrons in the redox couple's electron transfer (defaults to 1)
+* `ko`: the standard heterogeneous rate constant for electron transfer (defaults to 1, which ensures electrochemical reversibility)
+* `alpha`: the transfer coefficient, which accounts for the the symmetry of the redox reaction's energy barrier (defaults to 0.50, which is fully symmetrical)
+* `d`: the diffusion coefficient (defaults to 1 $\times$ 10^-5^ cm^2^/s; this value is assigned to both analyte's oxidized and its reduced forms)
+* `area`: the electrode's surface area (defaults to 0.04 cm^2^)
+* `temp`: the temperature in Kelvin (defaults to 293.15 K, or 20°C)
+* `scan.rate`: the rate at which the applied potential is changed (defaults to 0.04 V/s)
+* `ox.bulk`: the initial concentration of ox in bulk solution (defaults to 6.1 $\times$ 10^-8^ M)
+* `cred.bulk`: the initial concentration of red in bulk solution (defaults to 0 M)
+* `t.units`: the number of discrete units of time for which diffusion is modeled (defaults to 200)
+* `x.units`: the number of discrete units of distance from the electrode's surface for which diffusion is monitored (defaults to 50)
+
+With the exception of the last three variables--`cred.bulk`, `t.units`, and `x.units`---explore the effect of each variable on the cathodic peak current. Explore one variable at a time, leaving all other values at their default values. Be sure to explore a range of values, including, where possible, values on each side of the default value. Identify those variables that do not affect the cathodic peak current. For those variables that do affect the peak current, try to establish the nature of the relationship between the variable and the peak current; for example: are they directly proportional? are they inversely proportional? does the proportionality involve a power (such as a square or a square root)?

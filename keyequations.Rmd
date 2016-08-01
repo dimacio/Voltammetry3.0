@@ -1,0 +1,19 @@
+---
+output: html_document
+---
+
+### Key Equations
+
+The following is a list of important equations used in voltammetry. For each equation you should (a) know the context where the equation applies, (b) the meaning for each of the equation's variables, including typical values, and (c) how to use the equation to solve problems.
+
+**Nernst Equation**
+
+For the redox reaction OX + *ne*^-^ $\rightarrow$ RED, the Nernst equation is
+
+$$ E = E^{\textrm{o}}_{\textrm{OX} / \textrm{RED}} - \frac{0.05916}{n} \log { \frac { \left[\textrm{RED}\right] }{ \left[\textrm{OX}\right] }  } $$
+
+**Randles-Sevcik Equation**
+
+For the redox reaction OX + *ne*^-^ $\rightarrow$ RED, the Randles-Sevcik equation is
+
+$$ {i}_{p} = {\left (2.69 \times {10}^{5} \right)} {n}^{3/2} A {D}^{1/2} {\nu}^{1/2} {C}_{OX} $$

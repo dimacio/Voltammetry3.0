@@ -1,0 +1,38 @@
+name: "echem-website"
+navbar:
+  title: "Voltammetry"
+  left:
+    - text: "Home"
+      href: index.html
+    - text: "About"
+      href: about.html
+    - text: "Short Reads"
+      menu:
+        - text: "Three Important Concepts"
+          href: threeImportantConcepts.html
+    - text:  "Problems"
+      menu:
+        - text: "Problem 1"
+          href: Problem_1.html
+        - text: "Problem 2"
+          href: Problem_2.html
+    - text: "Notes"
+      menu:
+        - text: "Key Terms"
+          href: keyterms.html
+        - text: "Key Equations"
+          href: keyequations.html
+    - text: "R Functions"
+      menu: 
+      - text: "CV Functions"
+        href: cvFunctions.html
+      - text: "Simulating a CV"
+        href: cvSim.html
+      - text: "Plotting Functions"
+        href: plottingCVresults.html
+      - text: "Table Functions"
+        href: examiningCVdata.html
+    - text: "Resources"
+      href: links.html
+
+      

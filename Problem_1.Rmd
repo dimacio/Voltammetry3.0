@@ -1,0 +1,26 @@
+---
+output: html_document
+---
+
+### Problem Set 1
+
+The amount of sulfur in aromatic monomers is determined by differential pulse polarography. Standard solutions are prepared for analysis by dissolving 1.000 mL of the purified monomer in 25.00 mL of an electrolytic solvent, adding a known amount of sulfur, deaerating, and measuring the peak current. The following results were obtained for a set of calibration standards.
+
+µg S added| peak current (µA)
+----------:|------------------:
+0|0.14
+28|0.70
+56|1.23
+112|2.41
+168|3.42
+
+Analysis of a 1.000-mL sample, treated in the same manner as the standards, gives a peak current of 1.77µA. Report the µg S/mL in the sample. 
+
+You can copy and paste the following code to create objects for the `mass_S` and the `signal`.
+
+```
+mass_S = c(0, 28, 56, 112, 168)
+signal = c(0.14, 0.70, 1.23, 2.41, 3.42)
+```
+
+### **Answer**

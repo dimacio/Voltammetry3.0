@@ -1,0 +1,65 @@
+---
+title: "Function to Simulate Cyclic Voltammetry"
+output: html_document
+---
+
+```{r setup, echo=FALSE}
+# source file that contains the functions
+source("cvFunctions.R")
+```
+
+The function cvSim takes the following form
+```
+cvSim(e.start = 0.20, e.switch = -0.30, e.form = 0.013, 
+      n = 1, ko = 1, alpha = 0.50, d = 1e-5, area = 0.04, 
+      temp = 293.15, scan.rate = 0.04, cox.bulk = 6.1e-8, 
+      cred.bulk = 0, t.units = 200, x.units = 50)
+```
+
+where the function's inputs and default values are
+
+* `e.start`: the initial applied potential (defaults to 0.20 V)
+* `e.switch`: the applied potential where we reverse the direction in which the potential is scanned (defaults to -0.30 V)
+* `e.form`: the redox couple's formal potential (defaults to 0.013 V)
+* `n`: the number of electrons in the redox couple's electron transfer (defaults to 1)
+* `ko`: the standard heterogeneous rate constant for electron transfer (defaults to 1, which ensures electrochemical reversibility)
+* `alpha`: the transfer coefficient, which accounts for the the symmetry of the redox reaction's energy barrier (defaults to 0.50, which is fully symmetrical)
+* `d`: the diffusion coefficient (defaults to 1 $\times$ 10^-5^ cm^2^/s; this value is assigned to both analyte's oxidized and its reduced forms)
+* `area`: the electrode's surface area (defaults to 0.04 cm^2^)
+* `temp`: the temperature in Kelvin (defaults to 293.15 K, or 20°C)
+* `scan.rate`: the rate at which the applied potential is changed (defaults to 0.04 V/s)
+* `ox.bulk`: the initial concentration of ox in bulk solution (defaults to 6.1 $\times$ 10^-8^ M)
+* `cred.bulk`: the initial concentration of red in bulk solution (defaults to 0 M)
+* `t.units`: the number of discrete units of time for which diffusion is modeled (defaults to 200)
+* `x.units`: the number of discrete units of distance from the electrode's surface for which diffusion is monitored (defaults to 50)
+
+At present, this function allows for simulating the CV for ox --> red only, which requires an e.switch that is more negative than e.start, and does not allow for consideration of chemical reactions that might take place either before or after the redox reaction. 
+
+Because the method used to simulate the CV fails if 
+
+$$\textrm{x.units} \le \sqrt{18 \times \textrm{t.unit}}$$
+
+any change to x.units or to t.units must be made with care; in general, the default values are sufficient.
+
+For futher details on the simulation, see J. H. Brown, *J. Chem. Educ.*, **2015**, *92*, 1490-1496 [(DOI)](http://pubs.acs.org/doi/10.1021/acs.jchemed.5b00225). 
+
+The command `cvSim()` runs the function using the default values for all inputs. If you wish to change the value for one or more inputs, place the value(s) inside the parentheses; thus, for example, `cvSim(scan.rate = 0.20, ko = 0.5)` changes the scan rate and the rate constant from their default values. When the function is assigned to an object (`object.name = cvSim()`) it returns to the object a list that contains the following vectors and matricies:
+
+* `time`: a vector that contains the discrete times used to define the diffusion grid
+* `distance`: a vector that contains the discrete distances used to define the diffusion grid
+* `potential`: a vector that contains the discrete applied potentials corresponding to the discrete times used in the simulation
+* `current`: a vector that contains the calulated current at each discrete applied potential
+* `oxdata`: a matrix that contains the concentrations of the oxidized species in the diffusion grid; each row in the matrix is a discrete time and each column in the matrix is a discrete distance 
+* `reddata`: a matrix that contains red concentrations of the reduced species in diffusion grid; each row in the matrix is a discrete time and each column in the matrix is a discrete distance
+
+You can view items returned by the function using the following general command: `object.name$item.name`. The following code, for example, creates the object `testCV` and then prints out the potentials.
+
+```{r review}
+# create the object testCV changing some of the default values
+testCV = cvSim(e.start = 0.3, e.switch = -0.3, e.form = 0)
+# examine the  potentials
+testCV$potential
+```
+
+See the document `Plotting Functions` for functions that provide different ways to examine visually the result of the simulation and the document `Table CV` for functions that provide ways to examine the data produced by the simulation.
+
