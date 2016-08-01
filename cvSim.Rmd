@@ -41,14 +41,14 @@ $$\textrm{x.units} \le \sqrt{18 \times \textrm{t.unit}}$$
 
 any change to x.units or to t.units must be made with care; in general, the default values are sufficient.
 
-For futher details on the simulation, see J. H. Brown, *J. Chem. Educ.*, **2015**, *92*, 1490-1496 [(DOI)](http://pubs.acs.org/doi/10.1021/acs.jchemed.5b00225). 
+For further details on the simulation, see J. H. Brown, *J. Chem. Educ.*, **2015**, *92*, 1490-1496 [(DOI)](http://pubs.acs.org/doi/10.1021/acs.jchemed.5b00225). 
 
-The command `cvSim()` runs the function using the default values for all inputs. If you wish to change the value for one or more inputs, place the value(s) inside the parentheses; thus, for example, `cvSim(scan.rate = 0.20, ko = 0.5)` changes the scan rate and the rate constant from their default values. When the function is assigned to an object (`object.name = cvSim()`) it returns to the object a list that contains the following vectors and matricies:
+The command `cvSim()` runs the function using the default values for all inputs. If you wish to change the value for one or more inputs, place the value(s) inside the parentheses; thus, for example, `cvSim(scan.rate = 0.20, ko = 0.5)` changes the scan rate and the rate constant from their default values. When the function is assigned to an object (`object.name = cvSim()`) it returns to the object a list that contains the following vectors and matrices:
 
 * `time`: a vector that contains the discrete times used to define the diffusion grid
 * `distance`: a vector that contains the discrete distances used to define the diffusion grid
 * `potential`: a vector that contains the discrete applied potentials corresponding to the discrete times used in the simulation
-* `current`: a vector that contains the calulated current at each discrete applied potential
+* `current`: a vector that contains the calculated current at each discrete applied potential
 * `oxdata`: a matrix that contains the concentrations of the oxidized species in the diffusion grid; each row in the matrix is a discrete time and each column in the matrix is a discrete distance 
 * `reddata`: a matrix that contains red concentrations of the reduced species in diffusion grid; each row in the matrix is a discrete time and each column in the matrix is a discrete distance
 

@@ -4,7 +4,7 @@ output:
   html_document: 
     toc: yes
 ---
-This file simply shows the various R functions written for studying voltammetry. Specific details regarding the use of each function, including sample ouput, are available from other documents listed under the `Code` menu.
+This file simply shows the various R functions written for studying voltammetry. Specific details regarding the use of each function, including sample output, are available from other documents listed under the `Code` menu.
 
 ### cvSim( ): Function to Simulate a Cyclic Voltammogram
 

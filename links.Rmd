@@ -17,7 +17,7 @@ Huddle, P. A.; White, M. D. Rogers, F. "Using a Teaching Model to Correct Known 
 
 Maloy, J. T. "Factors Affecting the Shape of Current-Potential Curves," *J. Chem. Educ.* **1983**, *60*, 285--289.
 
-Miles, D. T. "Run-D.M.C: A Mnemomic Aid for Explaining Mass Transfer in Electrochemical Systems," *J. Chem. Educ.* **2013**, *90*, 1649--1653
+Miles, D. T. "Run-D.M.C: A Mnemonic Aid for Explaining Mass Transfer in Electrochemical Systems," *J. Chem. Educ.* **2013**, *90*, 1649--1653
 
 Thompson, R. Q.; Craig, N. C. "Unified Electroanalytical Chemistry: Applications of the Concept of Equilibrium," *J. Chem. Educ.* **2001**, *78*, 928--934.
 

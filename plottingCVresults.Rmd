@@ -18,12 +18,12 @@ library(plotly)
 library(ggplot2)
 ```
 
-When we use the function `cvSim` to create an object it returns to the object a list that contains the following vectors and matricies
+When we use the function `cvSim` to create an object it returns to the object a list that contains the following vectors and matrices
 
 * `time`: a vector that contains the discrete times used to define the diffusion grid
 * `distance`: a vector that contains the discrete distances used to define the diffusion grid
 * `potential`: a vector that contains the discrete applied potentials corresponding to the discrete times used in the simulation
-* `current`: a vector that contains the calulated current at each discrete applied potential
+* `current`: a vector that contains the calculated current at each discrete applied potential
 * `oxdata`: a matrix that contains the concentrations of the oxidized species in the diffusion grid; each row in the matrix is a discrete time and each column in the matrix is a discrete distance 
 * `reddata`: a matrix that contains red concentrations of the reduced species in diffusion grid; each row in the matrix is a discrete time and each column in the matrix is a discrete distance
 * `ormalE`: the redox couple's formal potential
@@ -53,7 +53,7 @@ We also can plot the cyclic voltammogram using the `plotly` library using the fu
 plotlyCV(file)
 ```
 
-which takes as its only input the name of the object created by `cvSim`. The resulting ouput provides an interactive plot; move your cursor inside the plot to explore the possibilities.
+which takes as its only input the name of the object created by `cvSim`. The resulting output provides an interactive plot; move your cursor inside the plot to explore the possibilities.
 
 ```{r plotly}
 plotlyCV(testCV1)
@@ -67,7 +67,7 @@ To plot the applied potential waveform, we use the `plotPotential` function
 plotPotential(file)
 ```
 
-which takes as its only input the name of the object created by `cvSim`. The resulting output is self-explantory.
+which takes as its only input the name of the object created by `cvSim`. The resulting output is self-explanatory.
 
 ```{r plotPotential}
 plotPotential(testCV1)
