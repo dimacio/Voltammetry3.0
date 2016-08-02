@@ -6,7 +6,7 @@ Files for exploring the possibilities of a digital-first (digtially native) text
 rmarkdown::render_site()
 ```
 
-When complete, you should see a `_Site` folder in your directory. To view the website, find the `index.html` file in the `_Site` folder and view it in your browser. If you edit and change any of the `.Rmd` files, you can use
+When complete, you should see a `_Site` folder in your directory. To view the website, find the `index.html` file in the `_site` folder and view it in your browser. If you edit and change any of the `.Rmd` files, you can use
 
 ```
 rmarkdown::render_site("filename.Rmd")
